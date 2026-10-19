@@ -1,0 +1,813 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800;900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/* CivicEye global styles                                             */
+/* ------------------------------------------------------------------ */
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --nav-height: 4.25rem;
+
+  /* CivicEye palette — indigo (default) */
+  --c-primary-50: 238 242 255;
+  --c-primary-100: 224 231 255;
+  --c-primary-200: 199 210 254;
+  --c-primary-300: 165 180 252;
+  --c-primary-400: 129 140 248;
+  --c-primary-500: 99 102 241;
+  --c-primary-600: 79 70 229;
+  --c-primary-700: 67 56 202;
+  --c-primary-800: 55 48 163;
+  --c-primary-900: 49 46 129;
+  --c-primary-950: 30 27 75;
+
+  /* Secondary "accent" — emerald for CivicEye, amber/yellow for Amrita */
+  --c-accent-300: 110 231 183;
+  --c-accent-400: 52 211 153;
+  --c-accent-500: 16 185 129;
+  --c-accent-600: 5 150 105;
+}
+
+  /* Amrita Eye palette — Amrita red (light theme keeps white, dark keeps
+     black, yellow is used for brand accents). Activated by html.amrita,
+     or locally by any .amrita wrapper (e.g. the login page). */
+  html.amrita,
+  .amrita {
+    /* Amrita Eye palette — matches the home page exactly:
+       maroon #A51636 (primary) + berry #E52B50 (accent). */
+    --c-primary-50: 253 240 243;
+    --c-primary-100: 250 225 230;
+    --c-primary-200: 244 195 204;
+    --c-primary-300: 234 148 164;
+    --c-primary-400: 216 93 120;
+    --c-primary-500: 165 22 54;   /* #A51636 maroon */
+    --c-primary-600: 132 18 43;   /* #84122B */
+    --c-primary-700: 100 14 33;
+    --c-primary-800: 70 10 23;
+    --c-primary-900: 45 6 15;
+    --c-primary-950: 28 4 9;
+
+    /* Accent = berry (bright call-to-action pink-red) */
+    --c-accent-300: 241 130 158;
+    --c-accent-400: 235 86 118;
+    --c-accent-500: 229 43 80;    /* #E52B50 berry */
+    --c-accent-600: 190 35 66;
+    --c-accent-700: 150 28 52;
+  }
+
+  /* Dark mode: the home page flips maroon → bright berry and uses deep
+     maroon-charcoal backgrounds. */
+  html.amrita.dark {
+    --c-primary-50: 45 6 15;
+    --c-primary-100: 60 8 20;
+    --c-primary-200: 80 11 27;
+    --c-primary-300: 110 15 37;
+    --c-primary-400: 140 20 48;
+    --c-primary-500: 229 43 80;   /* #E52B50 bright berry */
+    --c-primary-600: 235 86 118;
+    --c-primary-700: 241 130 158;
+    --c-primary-800: 247 175 193;
+    --c-primary-900: 252 220 228;
+    --c-primary-950: 255 240 243;
+    --c-accent-300: 255 190 205;
+    --c-accent-400: 235 86 118;
+    --c-accent-500: 229 43 80;
+    --c-accent-600: 190 35 66;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  /* Root-level horizontal overflow guard — decorative glows/wide content must
+     never widen the layout viewport (which stretches the fixed header). */
+  html {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  body {
+    @apply bg-slate-50 font-sans text-slate-800 antialiased transition-colors duration-300;
+    /* Never allow page content to push the viewport wider than the screen
+       (decorative glows, wide tables, etc.). */
+    overflow-x: hidden;
+  }
+
+  html.dark body {
+    @apply bg-slate-950 text-slate-200;
+  }
+
+  ::selection {
+    @apply bg-primary-500/25 text-primary-900;
+  }
+
+  html.dark ::selection {
+    @apply bg-primary-400/30 text-white;
+  }
+
+  /* Accessible focus rings */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-white;
+  }
+
+  html.dark :focus-visible {
+    @apply ring-offset-slate-950;
+  }
+}
+
+@layer components {
+  /* Glassmorphism surfaces */
+  .glass {
+    @apply border border-white/60 bg-white/70 backdrop-blur-xl;
+  }
+
+  .dark .glass {
+    @apply border-white/10 bg-white/[0.06];
+  }
+
+  .glass-strong {
+    @apply border border-white/70 bg-white/85 backdrop-blur-2xl;
+  }
+
+  .dark .glass-strong {
+    @apply border-white/10 bg-slate-900/85;
+  }
+
+  .card {
+    @apply rounded-2xl border border-slate-200/80 bg-white shadow-soft transition-all duration-300;
+  }
+
+  .dark .card {
+    @apply border-white/10 bg-slate-900/60;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-600 via-primary-500 to-emerald-500 bg-clip-text text-transparent;
+  }
+
+  /* Amrita Eye accent: red → gold gradient instead of indigo → emerald */
+  html.amrita .text-gradient,
+  .amrita .text-gradient {
+    background-image: linear-gradient(
+      to right,
+      rgb(var(--c-primary-600)),
+      rgb(var(--c-primary-500)) 45%,
+      #f59e0b
+    );
+  }
+
+  .logo-mark {
+    @apply bg-gradient-to-br from-primary-500 via-primary-600 to-emerald-500;
+  }
+
+  html.amrita .logo-mark,
+  .amrita .logo-mark {
+    background-image: linear-gradient(to bottom right, rgb(228 0 43), rgb(190 0 40), #f59e0b);
+  }
+
+  /* Brand-aware glow blobs — red + yellow in Amrita mode */
+  .brand-glow-a {
+    background-color: rgb(var(--c-primary-400) / 0.2);
+  }
+
+  .brand-glow-b {
+    background-color: rgb(var(--c-accent-400) / 0.2);
+  }
+
+  /* Brand-aware CTA banner gradient — indigo→emerald / red→yellow */
+  .brand-cta {
+    background-image: linear-gradient(
+      135deg,
+      rgb(var(--c-primary-800)) 0%,
+      rgb(var(--c-primary-600)) 55%,
+      rgb(var(--c-accent-500)) 130%
+    );
+  }
+
+  /* Soft brand-tinted panel behind images */
+  .brand-panel {
+    background-image: linear-gradient(
+      to bottom right,
+      rgb(var(--c-primary-500) / 0.15),
+      rgb(var(--c-accent-500) / 0.15)
+    );
+  }
+
+  /* Brand-aware icon-tile gradients — indigo→emerald (CivicEye) /
+     red→yellow (Amrita). Used by stat cards, feature cards, dashboards. */
+  .brand-grad-1 {
+    background-image: linear-gradient(135deg, rgb(var(--c-primary-500)), rgb(var(--c-accent-500)));
+  }
+  .brand-grad-2 {
+    background-image: linear-gradient(135deg, rgb(var(--c-primary-600)), rgb(var(--c-accent-400)));
+  }
+  .brand-grad-3 {
+    background-image: linear-gradient(135deg, rgb(var(--c-accent-500)), rgb(var(--c-primary-600)));
+  }
+  .brand-grad-4 {
+    background-image: linear-gradient(135deg, rgb(var(--c-primary-700)), rgb(var(--c-primary-500)));
+  }
+  .brand-grad-5 {
+    background-image: linear-gradient(135deg, rgb(var(--c-primary-600)), rgb(var(--c-primary-400)));
+  }
+  .brand-grad-6 {
+    background-image: linear-gradient(135deg, rgb(var(--c-accent-600)), rgb(var(--c-primary-500)));
+  }
+
+  /* Amrita mode: verified / low-severity badges shift from green to gold
+     so the palette reads red + yellow, not green/teal. */
+  html.amrita .bg-emerald-500\/10 {
+    background-color: rgb(var(--c-accent-500) / 0.15);
+  }
+  html.amrita .text-emerald-600 {
+    color: rgb(var(--c-accent-600));
+  }
+  html.amrita .bg-teal-500\/10 {
+    background-color: rgb(var(--c-accent-500) / 0.15);
+  }
+  html.amrita .text-teal-600 {
+    color: rgb(var(--c-accent-600));
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white shadow-glow hover:-translate-y-0.5 hover:bg-primary-500 active:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply btn border border-slate-300/80 bg-white text-slate-700 hover:border-primary-300 hover:text-primary-700 hover:shadow-softer;
+  }
+
+  .dark .btn-secondary {
+    @apply border-white/15 bg-white/[0.06] text-slate-200 hover:border-primary-400/50 hover:text-white;
+  }
+
+  .btn-ghost {
+    @apply btn text-slate-600 hover:bg-slate-100 hover:text-slate-900;
+  }
+
+  .dark .btn-ghost {
+    @apply text-slate-300 hover:bg-white/10 hover:text-white;
+  }
+
+  .btn-danger {
+    @apply btn bg-rose-600 text-white shadow-[0_10px_40px_-8px_rgba(225,29,72,0.45)] hover:-translate-y-0.5 hover:bg-rose-500;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-medium text-slate-600 backdrop-blur;
+  }
+
+  .dark .chip {
+    @apply border-white/10 bg-white/[0.06] text-slate-300;
+  }
+
+  .input-base {
+    @apply w-full rounded-xl border border-slate-300/80 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 transition-all duration-200 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/15;
+  }
+
+  .dark .input-base {
+    @apply border-white/15 bg-white/[0.05] text-slate-100 placeholder:text-slate-500;
+  }
+
+  .label-base {
+    @apply mb-1.5 block text-sm font-medium text-slate-700;
+  }
+
+  .dark .label-base {
+    @apply text-slate-300;
+  }
+
+  .section-pad {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .heading-xl {
+    @apply text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl;
+  }
+
+  .dark .heading-xl {
+    @apply text-white;
+  }
+
+  .heading-lg {
+    @apply text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl;
+  }
+
+  .dark .heading-lg {
+    @apply text-white;
+  }
+
+  .skeleton {
+    @apply relative overflow-hidden rounded-xl bg-slate-200/80;
+  }
+
+  .dark .skeleton {
+    @apply bg-white/[0.07];
+  }
+
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent;
+  }
+
+  .dark .skeleton::after {
+    @apply via-white/10;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Slim themed scrollbars */
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-300;
+  }
+
+  html.dark *::-webkit-scrollbar-thumb {
+    @apply bg-slate-700;
+  }
+}
+
+/* Comic CivicEye production theme: removes the former navy/glass landing aesthetic.
+   Scoped to CivicEye ONLY (html:not(.amrita)) — Amrita Eye keeps its own clean
+   campus look (maroon palette) and must never inherit the comic cream/navy skin. */
+@layer base {
+  html:not(.amrita) {
+    --c-primary-50: 255 249 231; --c-primary-100: 255 240 190; --c-primary-200: 255 222 119;
+    --c-primary-300: 255 211 48; --c-primary-400: 243 191 32; --c-primary-500: 224 169 46;
+    --c-primary-600: 190 126 19; --c-primary-700: 145 82 14; --c-primary-800: 95 55 17;
+    --c-primary-900: 54 40 25; --c-primary-950: 35 29 20;
+    --c-accent-300: 174 230 209; --c-accent-400: 145 220 196; --c-accent-500: 91 174 145; --c-accent-600: 59 126 101;
+  }
+  html:not(.amrita) body { background:#fff8e7; color:#172b44; }
+}
+@layer components {
+  .comic-page .btn-primary { background:#ffd630; color:#172b44; box-shadow:4px 4px 0 #172b44; border:2px solid #172b44; }
+  .comic-page .btn-secondary { background:#fffdf4; color:#172b44; border:2px solid #172b44; }
+  .comic-button { display:inline-flex; align-items:center; justify-content:center; gap:.55rem; border:3px solid #172b44; padding:.75rem 1rem; color:#172b44; font-size:.875rem; font-weight:900; box-shadow:3px 3px 0 #172b44; transition:transform .18s,box-shadow .18s; }
+  .comic-button:hover { transform:translate(-1px,-1px); box-shadow:4px 4px 0 #172b44; }
+}
+
+/* Map route only — comic field-guide theme. Home and all other routes stay unchanged. */
+body.comic-map-route { background:#fff8e7; color:#172b44; }
+body.comic-map-route header nav { background:#fff8e7!important; border:3px solid #172b44!important; border-radius:0!important; box-shadow:5px 5px 0 #ef6b59!important; }
+body.comic-map-route header nav a,body.comic-map-route header nav button { color:#172b44!important; }
+body.comic-map-route header nav .logo-mark { background:#ffd630!important; }
+body.comic-map-route .comic-map-page .input-base { border:3px solid #172b44!important; border-radius:0!important; background:#fffdf4!important; color:#172b44!important; }
+body.comic-map-route .comic-map-page button { border-color:#172b44!important; }
+body.comic-map-route .comic-map-page aside button { border:3px solid #172b44!important; border-radius:0!important; background:#fffdf4!important; box-shadow:3px 3px 0 #172b44; }
+body.comic-map-route .comic-map-page aside button:hover { background:#ffd630!important; transform:translate(-2px,-2px); box-shadow:5px 5px 0 #ef6b59; }
+body.comic-map-route .comic-map-page .text-slate-900,body.comic-map-route .comic-map-page .text-slate-800,body.comic-map-route .comic-map-page .text-slate-700 { color:#172b44!important; }
+body.comic-map-route .comic-map-page .text-slate-500,body.comic-map-route .comic-map-page .text-slate-400 { color:#52606a!important; }
+body.comic-map-route .comic-map-page .border-slate-200\/70 { border-color:#172b44!important; }
+
+/* Product-wide comic operating system — applies to every existing route. */
+@layer components {
+  html:not(.amrita) body { background-color:#fff8e7; background-image:radial-gradient(rgba(23,43,68,.13) 1px,transparent 1.2px); background-size:10px 10px; }
+  html:not(.amrita) .card { border:3px solid #172b44!important; border-radius:0!important; background:#fffdf4!important; box-shadow:5px 5px 0 #172b44!important; }
+  html:not(.amrita) .card:hover { transform:translate(-2px,-3px) rotate(-.25deg); box-shadow:8px 8px 0 #ef6b59!important; }
+  html:not(.amrita) .glass,html:not(.amrita) .glass-strong { border:3px solid #172b44!important; border-radius:0!important; background:#fff8e7!important; box-shadow:4px 4px 0 #172b44!important; backdrop-filter:none!important; }
+  html:not(.amrita) .btn,html:not(.amrita) .btn-primary,html:not(.amrita) .btn-secondary,html:not(.amrita) .btn-ghost { border:3px solid #172b44!important; border-radius:0!important; font-weight:900!important; box-shadow:4px 4px 0 #172b44!important; }
+  html:not(.amrita) .btn-primary { background:#ffd630!important; color:#172b44!important; }
+  html:not(.amrita) .btn-secondary { background:#fffdf4!important; color:#172b44!important; }
+  html:not(.amrita) .btn:hover,html:not(.amrita) .btn-primary:hover,html:not(.amrita) .btn-secondary:hover,html:not(.amrita) .btn-ghost:hover { transform:translate(-2px,-2px) rotate(-.5deg)!important; box-shadow:6px 6px 0 #ef6b59!important; }
+  html:not(.amrita) .chip { border:2px solid #172b44!important; border-radius:0!important; background:#91dcc4!important; color:#172b44!important; font-weight:800!important; }
+  html:not(.amrita) .input-base { border:3px solid #172b44!important; border-radius:0!important; background:#fffdf4!important; color:#172b44!important; box-shadow:3px 3px 0 #172b44!important; }
+  html:not(.amrita) .input-base:focus { border-color:#ef6b59!important; box-shadow:5px 5px 0 #ef6b59!important; }
+  html:not(.amrita) .heading-xl,html:not(.amrita) .heading-lg { font-family:Georgia,serif!important; text-transform:uppercase; letter-spacing:-.045em!important; color:#172b44!important; }
+}
+
+/* Comic navigation bar — one strong street-sign header on every page. */
+@layer components {
+  html:not(.amrita) { --nav-height: 5.65rem; }
+  html:not(.amrita) header { background:#fff8e7!important; border-bottom:4px solid #172b44; box-shadow:0 5px 0 #ef6b59; }
+  html:not(.amrita) header nav { min-height:4.9rem!important; height:auto!important; max-width:none!important; border:0!important; border-radius:0!important; background:#fff8e7!important; box-shadow:none!important; padding-inline:1rem!important; }
+  html:not(.amrita) header nav ul { gap:.45rem!important; }
+  html:not(.amrita) header nav ul a { border:2px solid transparent!important; color:#172b44!important; font-weight:900!important; padding:.5rem .65rem!important; }
+  html:not(.amrita) header nav ul a:hover,html:not(.amrita) header nav ul a:focus-visible { background:#ffd630!important; border-color:#172b44!important; box-shadow:3px 3px 0 #172b44; transform:translate(-2px,-2px) rotate(-1deg); }
+  html:not(.amrita) header nav .btn-primary { background:#ffd630!important; color:#172b44!important; border:3px solid #172b44!important; box-shadow:4px 4px 0 #172b44!important; }
+  html:not(.amrita) header nav .btn-secondary { background:#91dcc4!important; border:3px solid #172b44!important; }
+  html:not(.amrita) header nav button { border:2px solid #172b44!important; background:#fffdf4!important; box-shadow:2px 2px 0 #172b44; }
+}
+
+/* Header spacing repair: fixed comic header never sits on top of page titles/controls. */
+@layer components {
+  html:not(.amrita) header { z-index:80!important; }
+  html:not(.amrita) main { position:relative; z-index:1; }
+  @media (max-width: 1023px) {
+    html:not(.amrita) { --nav-height: 7.75rem; }
+    html:not(.amrita) header nav { min-height:6.35rem!important; align-items:center!important; }
+    html:not(.amrita) header nav > * { min-width:0; }
+    html:not(.amrita) header nav .logo { max-width:45%; }
+    html:not(.amrita) .comic-map-page { padding-top:calc(var(--nav-height) + .75rem)!important; }
+  }
+  @media (max-width: 640px) {
+    html:not(.amrita) { --nav-height: 6.7rem; }
+    html:not(.amrita) header nav { min-height:5.4rem!important; padding-inline:.65rem!important; }
+    html:not(.amrita) .comic-map-page { padding-top:calc(var(--nav-height) + .5rem)!important; }
+  }
+}
+
+/* Mobile header and menu repair — no controls can escape/overlap the viewport. */
+@media (max-width: 767px) {
+  html:not(.amrita) header nav .btn-secondary, html:not(.amrita) header nav .btn-primary, html:not(.amrita) header nav button[title] { display:none!important; }
+  html:not(.amrita) header nav { gap:.45rem!important; }
+  html:not(.amrita) header nav > :first-child { flex:1 1 auto!important; min-width:0!important; }
+  html:not(.amrita) header nav > :last-child { flex:0 0 auto!important; }
+  html:not(.amrita) [role="dialog"] > div:last-child { background:#fff8e7!important; border:4px solid #172b44!important; box-shadow:8px 0 0 #ef6b59!important; }
+  html:not(.amrita) [role="dialog"] > div:last-child > div:first-child { background:#ffd630!important; border-bottom:4px solid #172b44!important; }
+  html:not(.amrita) [role="dialog"] > div:last-child h2 { font-family:Georgia,serif!important; font-weight:900!important; color:#172b44!important; }
+  html:not(.amrita) [role="dialog"] > div:last-child button { border:2px solid #172b44!important; background:#fffdf4!important; }
+}
+
+/* Night Issue mode — a distinct midnight comic UI, not a dimmed light page. */
+html:not(.amrita).dark body { background:#081521!important; color:#eaf5f0!important; background-image:radial-gradient(rgba(145,220,196,.16) 1px,transparent 1.2px)!important; background-size:10px 10px; }
+html:not(.amrita).dark header { background:#0d2030!important; border-bottom-color:#ffd630!important; box-shadow:0 5px 0 #ef6b59!important; }
+html:not(.amrita).dark header nav { background:#0d2030!important; }
+html:not(.amrita).dark header nav a,html:not(.amrita).dark header nav button { color:#fff8e7!important; }
+/* Icon buttons (theme, home, bell, menu) keep the light cream bg otherwise —
+   they must flip to the midnight navy so their cream icons stay visible. */
+html:not(.amrita).dark header nav button { background:#0d2030!important; border-color:#91dcc4!important; color:#fff8e7!important; }
+html:not(.amrita).dark header nav button:hover { background:#173d50!important; }
+html:not(.amrita).dark header nav .btn-primary { background:#ffd630!important; color:#172b44!important; border-color:#172b44!important; }
+html:not(.amrita).dark header nav .btn-secondary { background:#173d50!important; border-color:#91dcc4!important; color:#fff8e7!important; }
+html:not(.amrita).dark header nav ul a:hover { background:#ef6b59!important; color:#172b44!important; }
+html:not(.amrita).dark .comic-page { background:#081521!important; color:#fff8e7!important; }
+html:not(.amrita).dark .comic-page .heading-xl,html:not(.amrita).dark .comic-page .heading-lg,html:not(.amrita).dark .comic-page h1,html:not(.amrita).dark .comic-page h2,html:not(.amrita).dark .comic-page h3 { color:#fff8e7!important; }
+html:not(.amrita).dark .card,html:not(.amrita).dark .glass,html:not(.amrita).dark .glass-strong { background:#102b3d!important; border-color:#91dcc4!important; box-shadow:5px 5px 0 #ef6b59!important; }
+html:not(.amrita).dark .btn-primary { background:#ffd630!important; color:#172b44!important; }
+html:not(.amrita).dark .btn-secondary,html:not(.amrita).dark .btn-ghost { background:#102b3d!important; border-color:#91dcc4!important; color:#fff8e7!important; }
+html:not(.amrita).dark .input-base { background:#0d2030!important; border-color:#91dcc4!important; color:#fff8e7!important; }
+html:not(.amrita).dark .chip { background:#173d50!important; border-color:#91dcc4!important; color:#fff8e7!important; }
+html:not(.amrita).dark .comic-map-page { background:#081521!important; color:#fff8e7!important; }
+html:not(.amrita).dark .comic-map-page aside { background:#173d50!important; }
+html:not(.amrita).dark .comic-map-page .text-slate-900,html.dark .comic-map-page .text-slate-800,html.dark .comic-map-page .text-slate-700 { color:#fff8e7!important; }
+html:not(.amrita).dark .comic-map-page .text-slate-500,html.dark .comic-map-page .text-slate-400 { color:#b7d4cb!important; }
+html:not(.amrita).dark .comic-map-page .bg-\[\#fff8e7\],html.dark .comic-map-page .bg-\[\#fffdf4\] { background:#102b3d!important; }
+
+/* Certificate controls remain readable in Night Issue mode. */
+html.dark [aria-label="Civic Hero certificate"] a,html.dark [aria-label="Civic Hero certificate"] button { color:#172b44!important; }
+html.dark [aria-label="Civic Hero certificate"] a.bg-\[\#fff8e7\],html.dark [aria-label="Civic Hero certificate"] button.bg-\[\#fff8e7\] { background:#91dcc4!important; }
+html.dark [aria-label="Civic Hero certificate"] a.bg-\[\#ffd630\],html.dark [aria-label="Civic Hero certificate"] button.bg-\[\#ffd630\] { background:#ffd630!important; }
+
+/* ---- ABOUT US spotlight (home page) ---- */
+/* The unmissable hook: a boxed comic button pinned under the header that
+   appears as soon as the reader leaves the hero and follows them down. */
+@keyframes about-us-ping {
+  0% { transform: scale(1); opacity: 1; }
+  70% { transform: scale(1.75); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
+}
+.about-us-ping { animation: about-us-ping 1.4s ease-out infinite; }
+.about-us-pill { animation: about-us-pop .28s cubic-bezier(.34,1.56,.64,1) both; text-decoration: none; }
+@keyframes about-us-pop {
+  from { opacity: 0; transform: translateY(-10px) rotate(-3deg); }
+  to { opacity: 1; transform: translateY(0) rotate(0deg); }
+}
+/* Big CTA inside the ABOUT US splash panel — yellow ink on navy. */
+.about-us-cta, .about-us-cta:hover { color: #ffd630 !important; box-shadow: 5px 5px 0 #ffd630 !important; }
+.about-us-cta:hover { transform: translate(-2px,-2px) rotate(-1deg); }
+
+/* Night Issue mode keeps the spotlight readable on midnight panels. */
+html.dark #about-us { background: #102b3d !important; border-color: #91dcc4 !important; }
+html.dark #about-us h2 { color: #fff8e7 !important; text-shadow: 3px 3px 0 #ef6b59 !important; }
+html.dark #about-us > div > div > p { color: #eaf5f0 !important; }
+html.dark #about-us .bg-\[\#fffdf4\] { background: #173d50 !important; }
+html.dark #about-us .bg-\[\#fffdf4\] span { color: #eaf5f0 !important; }
+/* Creator badge keeps navy numerals even on midnight mode. */
+html.dark #about-us .bg-\[\#fffdf4\] > span:first-child { color: #172b44 !important; }
+/* SOS chip stays yellow-on-navy. */
+html.dark #about-us .bg-\[\#172b44\] { background: #172b44 !important; }
+html.dark #about-us .bg-\[\#172b44\], html.dark #about-us .bg-\[\#172b44\] * { color: #ffd630 !important; }
+html.dark #about-us .about-us-cta { color: #ffd630 !important; }
+html.dark #creators .comic-button { color: #172b44 !important; }
+html.dark .about-us-pill { background: #ffd630 !important; color: #172b44 !important; }
+html.dark #creators { border-color: #91dcc4 !important; }
+/* Keep the safety slogan legible when the ABOUT US panel turns midnight. */
+html.dark #about-us .text-\[\#ffd630\] { color: #ffd630 !important; text-shadow: 3px 3px 0 #ef6b59, 7px 7px 0 #081521 !important; }
+
+/* ===================================================================
+   AMRITA EYE — neutralise the comic CivicEye skin on shared pages.
+   When html.amrita is active (Amrita Eye), any leftover comic navy/
+   yellow/cream inline classes render in the Amrita maroon palette so
+   NO CivicEye comic elements ever appear in the Amrita experience.
+   =================================================================== */
+html.amrita .bg-\[\#172b44\] { background-color: rgb(var(--c-primary-800)); }
+html.amrita .text-\[\#172b44\] { color: rgb(var(--c-primary-800)); }
+html.amrita .border-\[\#172b44\] { border-color: rgb(var(--c-primary-700)); }
+html.amrita .bg-\[\#ffd630\] { background-color: rgb(var(--c-accent-500)); }
+html.amrita .text-\[\#ffd630\] { color: rgb(var(--c-accent-500)); }
+html.amrita .border-\[\#ffd630\] { border-color: rgb(var(--c-accent-500)); }
+html.amrita .bg-\[\#fff8e7\] { background-color: rgb(var(--c-primary-50)); }
+html.amrita .text-\[\#fff8e7\] { color: rgb(var(--c-primary-50)); }
+html.amrita .border-\[\#fff8e7\] { border-color: rgb(var(--c-primary-50)); }
+html.amrita .bg-\[\#fffdf4\] { background-color: rgb(var(--c-primary-50)); }
+html.amrita .bg-\[\#91dcc4\] { background-color: rgb(var(--c-accent-500)); }
+html.amrita .bg-\[\#ef6b59\] { background-color: rgb(var(--c-primary-500)); }
+html.amrita .border-\[\#ef6b59\] { border-color: rgb(var(--c-primary-500)); }
+html.amrita .bg-\[\#102b3d\] { background-color: rgb(var(--c-primary-900)); }
+html.amrita .text-\[\#102b3d\] { color: rgb(var(--c-primary-900)); }
+html.amrita .shadow-\[4px_4px_0_\#172b44\] { box-shadow: 4px 4px 0 rgb(var(--c-primary-700)); }
+html.amrita .shadow-\[3px_3px_0_\#172b44\] { box-shadow: 3px 3px 0 rgb(var(--c-primary-700)); }
+html.amrita .shadow-\[8px_9px_0_\#ffd630\] { box-shadow: 8px 9px 0 rgb(var(--c-accent-500)); }
+html.amrita .shadow-\[4px_4px_0_\#ffd630\] { box-shadow: 4px 4px 0 rgb(var(--c-accent-500)); }
+html.amrita .shadow-\[8px_8px_0_\#ef6b59\] { box-shadow: 8px 8px 0 rgb(var(--c-primary-600)); }
+html.amrita .shadow-\[6px_6px_0_\#ef6b59\] { box-shadow: 6px 6px 0 rgb(var(--c-primary-600)); }
+html.amrita .shadow-\[5px_5px_0_\#ef6b59\] { box-shadow: 5px 5px 0 rgb(var(--c-primary-600)); }
+html.amrita .shadow-\[10px_10px_0_\#ef6b59\] { box-shadow: 10px 10px 0 rgb(var(--c-primary-600)); }
+html.amrita .shadow-\[0_5px_0_\#ef6b59\] { box-shadow: 0 5px 0 rgb(var(--c-primary-600)); }
+/* Give the Amrita campus map a little breathing room under the floating pill nav. */
+html.amrita .comic-map-page { padding-top: 6.5rem !important; }
+
+/* ---- Amrita Eye: brand-consistent accents on shared components ----
+   Remap the few non-var violet/blue brand accents so Amrita Eye pages
+   read as one maroon palette (semantic sky/blue for water stays). */
+html.amrita .to-violet-600 { --tw-gradient-to: rgb(var(--c-primary-800)); }
+html.amrita .from-violet-600 { --tw-gradient-from: rgb(var(--c-primary-700)); }
+html.amrita .text-violet-500 { color: rgb(var(--c-primary-500)); }
+html.amrita .bg-violet-500 { background-color: rgb(var(--c-primary-500)); }
+html.amrita .bg-violet-500\/10 { background-color: rgb(var(--c-primary-500) / 0.1); }
+html.amrita .from-primary-500 { --tw-gradient-from: rgb(var(--c-primary-500)); }
+html.amrita .to-primary-600 { --tw-gradient-to: rgb(var(--c-primary-600)); }
+
+/* ===================================================================
+   AMRITA EYE — SHARED-TAB THEME
+   Makes every tab (map, live, community, dashboard, about, contact,
+   features, report, admin) match the Amrita Eye home page:
+   warm #FFF5F7 light / deep maroon-charcoal dark, Playfair serif
+   headings, maroon → berry accents, white rounded cards.
+   =================================================================== */
+html.amrita body {
+  background-color: #fff5f7;
+  color: #1d1d1f;
+}
+html.amrita.dark body {
+  background-color: #1a030a;
+  color: #f5f5f7;
+}
+
+/* Headings — Playfair serif like the home page. */
+html.amrita .heading-xl,
+html.amrita .heading-lg,
+html.amrita h1,
+html.amrita h2,
+html.amrita h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.01em;
+}
+html.amrita .heading-xl,
+html.amrita .heading-lg {
+  color: #a51636;
+}
+html.amrita.dark .heading-xl,
+html.amrita.dark .heading-lg,
+html.amrita.dark h1,
+html.amrita.dark h2,
+html.amrita.dark h3 {
+  color: #f5f5f7;
+}
+
+/* Cards — white, rounded-2xl, soft maroon-tinted borders (home style). */
+html.amrita .card {
+  background-color: #ffffff;
+  border: 1px solid #f0dfe3;
+  border-radius: 1rem;
+  box-shadow: 0 8px 30px rgba(165, 22, 54, 0.06);
+}
+html.amrita.dark .card {
+  background-color: #161618;
+  border-color: #2a2a2e;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+html.amrita .card:hover {
+  transform: none;
+  box-shadow: 0 10px 34px rgba(165, 22, 54, 0.1);
+}
+
+/* Glass surfaces — soft white-pink glass in light, maroon-charcoal in dark. */
+html.amrita .glass,
+html.amrita .glass-strong {
+  background-color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(165, 22, 54, 0.12);
+  border-radius: 1rem;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 30px rgba(165, 22, 54, 0.07);
+}
+html.amrita.dark .glass,
+html.amrita.dark .glass-strong {
+  background-color: rgba(22, 22, 24, 0.8);
+  border-color: rgba(229, 43, 80, 0.2);
+}
+
+/* Buttons — rounded-full pill like the home CTA (maroon → berry). */
+html.amrita .btn,
+html.amrita .btn-primary {
+  border-radius: 9999px;
+}
+html.amrita .btn-primary {
+  background-color: #a51636;
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(165, 22, 54, 0.35);
+}
+html.amrita .btn-primary:hover {
+  background-color: #84122b;
+}
+html.amrita.dark .btn-primary {
+  background-color: #e52b50;
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(229, 43, 80, 0.35);
+}
+html.amrita.dark .btn-primary:hover {
+  background-color: #be2342;
+}
+html.amrita .btn-secondary {
+  background-color: #ffffff;
+  border-color: #e8ccd2;
+  color: #4a1c27;
+}
+html.amrita.dark .btn-secondary {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #f5f5f7;
+}
+
+/* Inputs — white rounded-xl with maroon focus ring. */
+html.amrita .input-base {
+  background-color: #ffffff;
+  border: 1px solid #ead6db;
+  border-radius: 0.75rem;
+  color: #1d1d1f;
+  box-shadow: none;
+}
+html.amrita .input-base:focus {
+  border-color: #a51636;
+  box-shadow: 0 0 0 3px rgba(165, 22, 54, 0.15);
+}
+html.amrita.dark .input-base {
+  background-color: #161618;
+  border-color: #2f2f34;
+  color: #f5f5f7;
+}
+
+/* Chips / badges — soft maroon tint. */
+html.amrita .chip {
+  background-color: rgba(165, 22, 54, 0.08);
+  color: #a51636;
+  border: 1px solid rgba(165, 22, 54, 0.18);
+  border-radius: 9999px;
+}
+html.amrita.dark .chip {
+  background-color: rgba(229, 43, 80, 0.14);
+  color: #ffb1c4;
+  border-color: rgba(229, 43, 80, 0.25);
+}
+
+/* Focus rings — maroon. */
+html.amrita :focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(165, 22, 54, 0.35);
+}
+html.amrita.dark :focus-visible {
+  box-shadow: 0 0 0 3px rgba(229, 43, 80, 0.4);
+}
+
+/* ---- Night mode: remap light comic SURFACES (inline hex utilities) ----
+   Cream/mint "paper" buttons/chips flip to midnight navy so light text stays
+   readable; the yellow comic accent keeps its navy-ink look (yellow bg + navy
+   text reads fine on dark too). Only in the CivicEye comic scope. */
+html:not(.amrita).dark .bg-\[\#fff8e7\],
+html:not(.amrita).dark .bg-\[\#fffdf4\] {
+  background-color: #0d2030 !important;
+}
+html:not(.amrita).dark .bg-\[\#91dcc4\] {
+  background-color: #173d50 !important;
+}
+/* Text that sat on cream/mint surfaces must become cream so it reads on the
+   navy surface. Applies to the .comic-button defaults and paired utilities. */
+html:not(.amrita).dark .comic-button.bg-\[\#fff8e7\],
+html:not(.amrita).dark .comic-button.bg-\[\#fffdf4\],
+html:not(.amrita).dark .comic-button.bg-\[\#91dcc4\],
+html:not(.amrita).dark .bg-\[\#fff8e7\] .text-\[\#172b44\],
+html:not(.amrita).dark .bg-\[\#fffdf4\] .text-\[\#172b44\],
+html:not(.amrita).dark .bg-\[\#91dcc4\] .text-\[\#172b44\] {
+  color: #fff8e7 !important;
+}
+/* Keep navy-on-yellow (the classic comic pop) intact in the dark theme. */
+html:not(.amrita).dark .comic-button.bg-\[\#ffd630\] {
+  color: #172b44 !important;
+}
+/* The floating "about us" pill on the comic home: mint chip → navy. */
+html:not(.amrita).dark [class*="about-us-pill"],
+html:not(.amrita).dark .fixed.right-5 .comic-button {
+  background-color: #173d50 !important;
+  color: #fff8e7 !important;
+}
+
+
+/* ---- Interior-page clearance under the fixed top bar ----
+   CivicEye comic street-sign header: push interior content below it.
+   (Uses --nav-height which the comic theme already varies per breakpoint.) */
+html:not(.amrita) main.has-top-nav {
+  padding-top: var(--nav-height);
+}
+/* Amrita Eye floating pill sits ~top-24 to ~86px: clear ~5.75rem. */
+html.amrita main.has-top-nav {
+  padding-top: 5.75rem;
+}
+@media (min-width: 640px) {
+  html.amrita main.has-top-nav {
+    padding-top: 6.25rem;
+  }
+}
+
+/* CivicEye comic map: desktop comic header is ~114px; give the map extra
+   clearance so its yellow header bar never tucks under the fixed header. */
+@media (min-width: 1024px) {
+  html:not(.amrita) .comic-map-page {
+    padding-top: calc(var(--nav-height) + 1.25rem) !important;
+  }
+}
+
+/* ---- Amrita Eye floating nav — compact + never overflows on phones ----
+   Small screens: shrink the logo mark/wordmark so the branding pill is modest,
+   stop the wordmark wrapping, and keep the nav pill inside the viewport. */
+@media (max-width: 639px) {
+  html.amrita header .navbar-logo-pill .logo-mark {
+    height: 1.85rem !important;
+    width: 1.85rem !important;
+    border-radius: 0.55rem !important;
+  }
+  html.amrita header .navbar-logo-pill .logo-mark svg {
+    height: 1rem !important;
+    width: 1rem !important;
+  }
+  html.amrita header .navbar-logo-pill a {
+    gap: 0.5rem !important;
+  }
+  html.amrita header .navbar-logo-pill a .flex-col {
+    line-height: 1 !important;
+  }
+  html.amrita header .navbar-logo-pill a .flex-col span {
+    white-space: nowrap !important;
+  }
+  html.amrita header .navbar-logo-pill a .flex-col > span:first-child {
+    font-size: 0.95rem !important;
+    line-height: 1.1 !important;
+  }
+  html.amrita header .navbar-logo-pill a .flex-col > span:last-child {
+    display: none !important; /* tagline off on tiny screens */
+  }
+  html.amrita header .navbar-nav-pill > div {
+    gap: 0 !important;
+  }
+}
+
+/* Hide Google Maps InfoWindow default white bubble chrome so our MapPopup card shows cleanly */
+.gm-style .gm-style-iw-c {
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 16px !important;
+}
+.gm-style .gm-style-iw-d {
+  overflow: visible !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+.gm-style .gm-style-iw-tc,
+.gm-style .gm-style-iw-t::after {
+  display: none !important;
+}
+.gm-style .gm-style-iw-c > button.gm-ui-hover-effect {
+  display: none !important;
+}
