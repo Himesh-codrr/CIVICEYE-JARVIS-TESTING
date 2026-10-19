@@ -35,27 +35,6 @@ export function ImageUploader({ value, onChange, className, disabled = false, di
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (disabled) {
-    return (
-      <div
-        role="alert"
-        className={cn(
-          'rounded-2xl border-2 border-dashed border-amber-400/60 bg-amber-500/10 px-6 py-8 text-center',
-          className,
-        )}
-      >
-        <ImagePlus className="mx-auto h-8 w-8 text-amber-500" />
-        <p className="mt-3 text-sm font-semibold text-slate-800 dark:text-slate-100">
-          Image upload is disabled in this JARVIS testing version.
-        </p>
-        <p className="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-          {disabledMessage ||
-            'For live CivicEye reporting, please upload your image at civiceye.co.in.'}
-        </p>
-      </div>
-    );
-  }
-
   const handleFile = useCallback(
     async (file: File | undefined) => {
       if (!file) return;
@@ -84,6 +63,27 @@ export function ImageUploader({ value, onChange, className, disabled = false, di
     setDragOver(false);
     void handleFile(e.dataTransfer.files?.[0]);
   };
+
+  if (disabled) {
+    return (
+      <div
+        role="alert"
+        className={cn(
+          'rounded-2xl border-2 border-dashed border-amber-400/60 bg-amber-500/10 px-6 py-8 text-center',
+          className,
+        )}
+      >
+        <ImagePlus className="mx-auto h-8 w-8 text-amber-500" />
+        <p className="mt-3 text-sm font-semibold text-slate-800 dark:text-slate-100">
+          Image upload is disabled in this JARVIS testing version.
+        </p>
+        <p className="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+          {disabledMessage ||
+            'For live CivicEye reporting, please upload your image at civiceye.co.in.'}
+        </p>
+      </div>
+    );
+  }
 
   if (value) {
     return (
